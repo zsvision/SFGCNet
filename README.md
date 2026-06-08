@@ -4,7 +4,7 @@ Official PyTorch implementation of **SFGCNet: A Low-Light Image Enhancement Netw
 
 ## Introduction
 
-**SFGCNet** is designed for low-light image enhancement under challenging illumination and noise conditions. 
+SFGCNet is designed for low-light image enhancement under challenging illumination and noise conditions. In addition to standard low-light restoration, it is also evaluated on underwater image enhancement and low-light object detection tasks, demonstrating its generalization ability across different degraded visual scenarios.
 
 ## Environment
 
