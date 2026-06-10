@@ -71,7 +71,6 @@ beta1 = 0.9
 beta2 = 0.999
 initial learning rate = 1e-4
 minimum learning rate = 1e-6
-scheduler = cosine annealing
 ```
 
 For LOL-v1 and LOLv2-Synthetic, we use random cropped patches of size `128 × 128`. The batch size is set to `16` or `24`, and the model is trained for `1000` epochs.
