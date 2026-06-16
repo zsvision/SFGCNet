@@ -62,6 +62,12 @@ dataset/
     └── high/
 ```
 
+## Pretrained Models
+
+We provide the pretrained weights of SFGCNet for quick evaluation. You can download them from Baidu Netdisk:
+
+Baidu Netdisk:[Download Link](https://pan.baidu.com/s/1DrF0D5vxDCizRF6eIETP4g) (Extraction code: `nt88`)
+
 ## Training Settings
 
 SFGCNet is optimized using the Adam optimizer with:
