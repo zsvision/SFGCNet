@@ -85,25 +85,25 @@ For LOLv2-Real, we use patches of size `256 × 256` with a batch size of `10`. A
 
 Validation is performed regularly during training, and the best checkpoint is selected according to validation performance.
 
-* * ## Evaluation Metrics
+## Evaluation Metrics
 
-    To comprehensively assess the performance and generalization capability of our proposed method, we conduct extensive evaluations on the primary task of Low-Light Image Enhancement, as well as two downstream applications: Underwater Image Enhancement and Object Detection. 
+To comprehensively assess the performance and generalization capability of our proposed method, we conduct extensive evaluations on the primary task of Low-Light Image Enhancement, as well as two downstream applications: Underwater Image Enhancement and Object Detection. 
 
-    The detailed datasets and metrics used for each task are summarized below:
+The detailed datasets and metrics used for each task are summarized below:
 
-    | Task                                          | Dataset(s)                                        | Evaluation Metrics |
-    | :-------------------------------------------- | :------------------------------------------------ | :----------------- |
-    | **Low-Light Image Enhancement**               | **Paired:** LOL-v1, LOL-v2-Real, LOL-v2-Synthetic | PSNR, SSIM, LPIPS  |
-    |                                               | **Unpaired:** LIME, DICM, NPE, MEF, VV            | BRISQUE            |
-    | **Underwater Image Enhancement (Downstream)** | Challenging-60                                    | UCIQE, NIQE        |
-    | **Object Detection (Downstream)**             | ExDark, DarkFace                                  | mAP@50,mAP@50:95   |
+| Task                                          | Dataset(s)                                        | Evaluation Metrics |
+| :-------------------------------------------- | :------------------------------------------------ | :----------------- |
+| **Low-Light Image Enhancement**               | **Paired:** LOL-v1, LOL-v2-Real, LOL-v2-Synthetic | PSNR, SSIM, LPIPS  |
+|                                               | **Unpaired:** LIME, DICM, NPE, MEF, VV            | BRISQUE            |
+| **Underwater Image Enhancement (Downstream)** | Challenging-60                                    | UCIQE, NIQE        |
+| **Object Detection (Downstream)**             | ExDark, DarkFace                                  | mAP@50,mAP@50:95   |
 
-    **Metrics Details:**
+**Metrics Details:**
 
-    * **Primary Task: Low-Light Image Enhancement (Paired):** For paired datasets including **LOL-v1**, **LOL-v2-Real**, and **LOL-v2-Synthetic**, we employ **PSNR** and **SSIM** to measure pixel-level restoration accuracy and structural fidelity, alongside **LPIPS** to evaluate human perceptual similarity.
-    * **Primary Task: Low-Light Image Enhancement (Unpaired):** For unpaired real-world testing datasets including **LIME**, **DICM**, **NPE**, **MEF**, and **VV**, we utilize the no-reference quality metric **BRISQUE** to evaluate the naturalness and visual quality of enhanced images without ground truth.
-    * **Downstream Application: Underwater Image Enhancement:** To demonstrate the generalization of our method to other visually degraded environments, we evaluate it on underwater scenes. We use no-reference metrics **UCIQE** and **NIQE** on the **Challenging-60** dataset to assess color correction and contrast balance. For the **UIEB** dataset, we focus strictly on qualitative visual comparisons.
-    * **Downstream Application: Object Detection:** To validate that our enhancement effectively recovers semantic details for high-level machine vision, we evaluate object detection performance on the **ExDark** and **DarkFace** datasets, reporting the mean Average Precision (**mAP@50** and **mAP@50:95**).
+* **Primary Task: Low-Light Image Enhancement (Paired):** For paired datasets including **LOL-v1**, **LOL-v2-Real**, and **LOL-v2-Synthetic**, we employ **PSNR** and **SSIM** to measure pixel-level restoration accuracy and structural fidelity, alongside **LPIPS** to evaluate human perceptual similarity.
+* **Primary Task: Low-Light Image Enhancement (Unpaired):** For unpaired real-world testing datasets including **LIME**, **DICM**, **NPE**, **MEF**, and **VV**, we utilize the no-reference quality metric **BRISQUE** to evaluate the naturalness and visual quality of enhanced images without ground truth.
+* **Downstream Application: Underwater Image Enhancement:** To demonstrate the generalization of our method to other visually degraded environments, we evaluate it on underwater scenes. We use no-reference metrics **UCIQE** and **NIQE** on the **Challenging-60** dataset to assess color correction and contrast balance. For the **UIEB** dataset, we focus strictly on qualitative visual comparisons.
+* **Downstream Application: Object Detection:** To validate that our enhancement effectively recovers semantic details for high-level machine vision, we evaluate object detection performance on the **ExDark** and **DarkFace** datasets, reporting the mean Average Precision (**mAP@50** and **mAP@50:95**).
 
 ## Acknowledgement
 
