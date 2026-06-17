@@ -1,6 +1,6 @@
 # SFGCNet
 
-Official PyTorch implementation of **SFGCNet: A Low-Light Image Enhancement Network with Spatial-Frequency Collaborative Learning and Global Context Awareness**.
+Official PyTorch implementation of **SFGCNet: Spatial-Frequency Collaborative Learning with Global Context Awareness for Robust Low-Light Image Enhancement**.
 
 ## Introduction
 
