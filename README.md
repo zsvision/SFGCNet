@@ -19,8 +19,8 @@ CUDA 11.8
 Create and configure the experimental environment by executing the following commands:
 
 ```bash
-conda create -n low python=3.10.19 -y
-conda activate low
+conda create -n lowlight python=3.10.19 -y
+conda activate lowlight
 conda install pytorch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 pytorch-cuda=11.8 -c pytorch -c nvidia -y
 pip install -r requirements.txt
 ```
