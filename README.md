@@ -27,39 +27,57 @@ pip install -r requirements.txt
 
 ## Datasets
 
-We evaluate SFGCNet on paired and unpaired low-light image enhancement datasets.
+We evaluate WD-Mamba on paired and unpaired low-light image enhancement datasets.
 
-Paired datasets:
+**Paired datasets:**
+* LOL-v1
+* LOLv2-Real
+* LOLv2-Synthetic
 
-- LOL-v1
-- LOLv2-Real
-- LOLv2-Synthetic
+**Unpaired datasets:**
+* LIME
+* DICM
+* NPE
+* MEF
+* VV
 
-Unpaired datasets:
+**Additional evaluation datasets:**
+* ExDark for low-light object detection evaluation
+* UIEB for underwater image enhancement evaluation
 
-- LIME
-- DICM
-- NPE
-- MEF
-- VV
+### Download Links
+You can download all the prepared datasets via Baidu Netdisk:
+* **Link:** [Baidu Netdisk (Datasets)](https://pan.baidu.com/s/1LVYxVL8CIM2N0cPHYUZ0Kg)
+* **Extraction Code:** `gv4d`
 
-Additional evaluation datasets:
-
-- ExDark for low-light object detection evaluation
-- UIEB for underwater image enhancement evaluation
-
-Please download the datasets from their official sources and organize them according to your training and testing scripts.
-
-A typical paired dataset structure is:
+### Directory Structure
+Please download the datasets and organize them according to the training and testing scripts. A typical dataset structure is as follows:
 
 ```text
-dataset/
-├── train/
-│   ├── low/
-│   └── high/
-└── test/
-    ├── low/
-    └── high/
+data/
+├── LOLdataset/
+│   ├── our485/
+│   │   ├── Train/
+│   │   └── Test/
+│   └── eval15/
+│       ├── Train/
+│       └── Test/
+├── LOLv2/
+│   ├── Real_captured/
+│   │   ├── Train/
+│   │   └── Test/
+│   └── Synthetic/
+│       ├── Train/
+│       └── Test/
+├── Unpaired_Datasets/
+│   ├── DICM/
+│   ├── LIME/
+│   ├── MEF/
+│   ├── NPE/
+│   └── VV/
+├── Challenging-60/
+├── UIEB/
+└── track1.2_test_sample/
 ```
 
 ## Pretrained Models
