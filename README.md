@@ -76,8 +76,8 @@ data/
 │   ├── MEF/
 │   ├── NPE/
 │   └── VV/
-├── Challenging-60/
 ├── UIEB/
+├── Challenging-60/
 └── track1.2_test_sample/
 ```
 
