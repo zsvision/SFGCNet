@@ -42,13 +42,14 @@ We evaluate WD-Mamba on paired and unpaired low-light image enhancement datasets
 * VV
 
 **Additional evaluation datasets:**
+
 * ExDark for low-light object detection evaluation
 * UIEB for underwater image enhancement evaluation
 
 ### Download Links
 You can download all the prepared datasets via Baidu Netdisk:
-* **Link:** [Baidu Netdisk (Datasets)](https://pan.baidu.com/s/1LVYxVL8CIM2N0cPHYUZ0Kg)
-* **Extraction Code:** `gv4d`
+
+Baidu Netdisk: [Download Link](https://pan.baidu.com/s/1LVYxVL8CIM2N0cPHYUZ0Kg) (Extraction code: `gv4d`)
 
 ### Directory Structure
 Please download the datasets and organize them according to the training and testing scripts. A typical dataset structure is as follows:
