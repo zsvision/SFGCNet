@@ -85,19 +85,18 @@ For LOLv2-Real, we use patches of size `256 × 256` with a batch size of `10`. A
 
 Validation is performed regularly during training, and the best checkpoint is selected according to validation performance.
 
-## Evaluation
+## Evaluation Metrics
 
-For paired datasets, we report:
+To comprehensively assess the performance and generalization capability of our proposed method, we conduct extensive quantitative evaluations across three distinct vision tasks: Low-Light Image Enhancement, Underwater Image Enhancement, and Object Detection. 
+Our evaluation protocols are designed to measure both standard pixel-level restoration accuracy and the human-perceptual quality of the enhanced images. Furthermore, we evaluate the practical utility of our enhancement model by testing its impact on downstream high-level vision tasks.
+The detailed metrics used for each task are summarized below:
 
-- PSNR
-- SSIM
-- LPIPS
-
-For unpaired datasets, we report:
-
-- BRISQUE
-
-We also conduct cross-domain evaluations on ExDark and UIEB to validate the generalization ability of SFGCNet in low-light object detection and underwater image enhancement scenarios.
+| Task                             | Dataset Type | Evaluation Metrics |
+| :------------------------------- | :----------- | :----------------- |
+| **Low-Light Image Enhancement**  | Paired       | PSNR, SSIM, LPIPS  |
+|                                  | Unpaired     | BRISQUE            |
+| **Underwater Image Enhancement** | All          | UCIQE, NIQE        |
+| **Object Detection**             | All          | mAP@50, mAP@50:95  |
 
 ## Acknowledgement
 
