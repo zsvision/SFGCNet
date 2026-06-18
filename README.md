@@ -122,6 +122,21 @@ CUDA_VISIBLE_DEVICES=0 python train_for_lolv2r.py
 CUDA_VISIBLE_DEVICES=0 python train_for_lolv2s.py
 ```
 
+### Evaluation
+
+The evaluation scripts for WD-Mamba are designed to be straightforward and run out-of-the-box on a single GPU. To test the model and reproduce the reported metrics, simply run the corresponding evaluation script for your target dataset:
+
+```bash
+# Evaluate on the LOL-v1 dataset
+python test_for_lolv1.py
+
+# Evaluate on the LOLv2-Real dataset
+python test_for_lolv2r.py
+
+# Evaluate on the LOLv2-Synthetic dataset
+python test_for_lolv2s.py
+```
+
 ## Evaluation Metrics
 
 To comprehensively assess the performance and generalization capability of our proposed method, we conduct extensive evaluations on the primary task of Low-Light Image Enhancement, as well as two downstream applications: Underwater Image Enhancement and Object Detection. 
