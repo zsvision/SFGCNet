@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
-os.environ['CUDA_VISIBLE_DEVICES'] = "1"
+os.environ['CUDA_VISIBLE_DEVICES'] = "0,1"
 import argparse
 import json
 import torch

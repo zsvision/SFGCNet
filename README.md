@@ -104,6 +104,24 @@ For LOLv2-Real, we use patches of size `256 × 256` with a batch size of `10`. A
 
 Validation is performed regularly during training, and the best checkpoint is selected according to validation performance.
 
+### Training
+
+The training scripts will automatically utilize the available GPUs. You can specify which GPUs to use by prepending `CUDA_VISIBLE_DEVICES` to the run command. This is particularly useful for managing resources or adapting to different hardware setups.
+
+**Single-GPU Training**
+If you have a single GPU or wish to restrict the training of WD-Mamba to a specific card (e.g., GPU 0), run the following command:
+
+```bash
+# For LOL-v1 dataset
+CUDA_VISIBLE_DEVICES=0 python train_for_lolv1.py
+
+# For LOLv2-Real dataset
+CUDA_VISIBLE_DEVICES=0 python train_for_lolv2r.py
+
+# For LOLv2-Synthetic dataset
+CUDA_VISIBLE_DEVICES=0 python train_for_lolv2s.py
+```
+
 ## Evaluation Metrics
 
 To comprehensively assess the performance and generalization capability of our proposed method, we conduct extensive evaluations on the primary task of Low-Light Image Enhancement, as well as two downstream applications: Underwater Image Enhancement and Object Detection. 
