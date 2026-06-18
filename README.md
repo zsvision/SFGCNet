@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## Datasets
 
-We evaluate WD-Mamba on paired and unpaired low-light image enhancement datasets.
+We evaluate SFGCNet on paired and unpaired low-light image enhancement datasets.
 
 **Paired datasets:**
 * LOL-v1
