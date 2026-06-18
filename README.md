@@ -109,7 +109,7 @@ Validation is performed regularly during training, and the best checkpoint is se
 The training scripts will automatically utilize the available GPUs. You can specify which GPUs to use by prepending `CUDA_VISIBLE_DEVICES` to the run command. This is particularly useful for managing resources or adapting to different hardware setups.
 
 **Single-GPU Training**
-If you have a single GPU or wish to restrict the training of WD-Mamba to a specific card (e.g., GPU 0), run the following command:
+If you have a single GPU or wish to restrict the training of SFGCNet to a specific card (e.g., GPU 0), run the following command:
 
 ```bash
 # For LOL-v1 dataset
@@ -124,7 +124,7 @@ CUDA_VISIBLE_DEVICES=0 python train_for_lolv2s.py
 
 ### Evaluation
 
-The evaluation scripts for WD-Mamba are designed to be straightforward and run out-of-the-box on a single GPU. To test the model and reproduce the reported metrics, simply run the corresponding evaluation script for your target dataset:
+The evaluation scripts for SFGCNet are designed to be straightforward and run out-of-the-box on a single GPU. To test the model and reproduce the reported metrics, simply run the corresponding evaluation script for your target dataset:
 
 ```bash
 # Evaluate on the LOL-v1 dataset
