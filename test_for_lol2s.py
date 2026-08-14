@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 import time
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
@@ -14,13 +14,15 @@ from datasets.LoL_DataLoader import TestData_for_LOLv2Synthetic
 from pytorch_msssim import ssim
 from models import *
 import random
-import numpy as np
+import numpy as np  
 import cv2
 import lpips 
 
 
 def set_seed(seed=8001):
-
+    """
+    固定所有随机种子，确保实验可重复
+    """
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -32,7 +34,7 @@ def set_seed(seed=8001):
 
 
 set_seed(8001)
-# ============================================
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='sfhformer_lol_s', type=str, help='model name')
@@ -44,13 +46,14 @@ parser.add_argument('--exp', default='lowlight', type=str, help='experiment sett
 args = parser.parse_args()
 
 
-save_img_root = '/root/our/LOLV2_Synthetic/lowlight/results'
+save_img_root = '/root/lanyun-tmp/LOLV2_Synthetic/lowlight/results'
 os.makedirs(save_img_root, exist_ok=True)
 
 def valid(val_loader_full, network):
     PSNR_full = AverageMeter()
     SSIM_full = AverageMeter()
     LPIPS_full = AverageMeter() 
+
 
 
     loss_fn_alex = lpips.LPIPS(net='alex', verbose=False).cuda()
@@ -65,14 +68,17 @@ def valid(val_loader_full, network):
         with torch.no_grad():
             output = network(source_img).clamp_(0, 1)
 
+
             mse_loss = F.mse_loss(output, target_img, reduction='none').mean((1, 2, 3))
-            psnr_single = 10 * torch.log10(1 / mse_loss).item()  # 单张的PSNR
+            psnr_single = 10 * torch.log10(1 / mse_loss).item()
             psnr_full = 10 * torch.log10(1 / mse_loss).mean()
             PSNR_full.update(psnr_full.item(), source_img.size(0))
 
-            ssim_single = ssim(output, target_img, data_range=1, size_average=False).item()  # 单张的SSIM
+
+            ssim_single = ssim(output, target_img, data_range=1, size_average=False).item()
             ssim_full = ssim(output, target_img, data_range=1, size_average=False).mean()
             SSIM_full.update(ssim_full.item(), source_img.size(0))
+
 
 
             output_lpips = output * 2.0 - 1.0
@@ -80,13 +86,14 @@ def valid(val_loader_full, network):
 
 
             lpips_val = loss_fn_alex(output_lpips, target_lpips)
-            lpips_single = lpips_val.item()  # 单张的LPIPS
+            lpips_single = lpips_val.item()
             LPIPS_full.update(lpips_val.mean().item(), source_img.size(0))
 
 
             psnr_str = f"{psnr_single:.2f}"
             ssim_str = f"{ssim_single:.4f}"
             lpips_str = f"{lpips_single:.4f}"
+
 
             source_np = (source_img[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
             target_np = (target_img[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
@@ -95,6 +102,7 @@ def valid(val_loader_full, network):
             source_bgr = cv2.cvtColor(source_np, cv2.COLOR_RGB2BGR)
             target_bgr = cv2.cvtColor(target_np, cv2.COLOR_RGB2BGR)
             output_bgr = cv2.cvtColor(output_np, cv2.COLOR_RGB2BGR)
+
 
 
             file_prefix = f"{img_idx:04d}lowlight_psnr{psnr_str}_ssim{ssim_str}_lpips{lpips_str}"
@@ -123,7 +131,7 @@ if __name__ == '__main__':
     network = nn.DataParallel(network, device_ids=device_index).cuda()
     
 
-    ckpt_path = '/root/our/LOLV2_Synthetic/lowlight/saved_models/lowlight/lolv2s.pth'
+    ckpt_path = '/root/lanyun-tmp/LOLV2_Synthetic/lowlight/saved_models/lowlight/sfhformer_lol_strain_lolv2s_best.pth'
     network.load_state_dict(torch.load(ckpt_path)['state_dict'])
 
 
@@ -133,7 +141,7 @@ if __name__ == '__main__':
         random.seed(worker_seed)
 
 
-    test_data_dir = '/root/our/data/LOLv2/Synthetic/Test'
+    test_data_dir = '/root/lanyun-tmp/SFHformer/data/LOLv2/Synthetic/Test'
     test_dataset = TestData_for_LOLv2Synthetic(8, test_data_dir)
     test_loader = DataLoader(test_dataset,
                              batch_size=1,
@@ -142,8 +150,8 @@ if __name__ == '__main__':
                              pin_memory=True,
                              worker_init_fn=worker_init_fn)
 
-    print({save_img_root})
+    print(f"开始测试，结果将保存到: {save_img_root}")
     avg_psnr, avg_ssim, avg_lpips = valid(test_loader, network)
     
-    print(format(avg_psnr, avg_ssim, avg_lpips))
-    print({save_img_root})
+    print("PSNR: {:.2f}, SSIM: {:.4f}, LPIPS: {:.4f}".format(avg_psnr, avg_ssim, avg_lpips))
+    print(f"测试完成！图片已保存到: {save_img_root}")

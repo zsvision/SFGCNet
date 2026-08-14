@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 import os
 import time
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
@@ -16,7 +16,8 @@ from models import *
 import random
 import numpy as np
 import cv2
-import lpips  
+import lpips
+
 
 def set_seed(seed=8001):
 
@@ -29,8 +30,9 @@ def set_seed(seed=8001):
     torch.backends.cudnn.benchmark = False
     os.environ['PYTHONHASHSEED'] = str(seed)
 
+
 set_seed(8001)
-# ============================================
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='sfhformer_t', type=str, help='model name')
@@ -42,7 +44,7 @@ parser.add_argument('--exp', default='lowlight', type=str, help='experiment sett
 args = parser.parse_args()
 
 
-save_img_root = '/root/our/LOLdatasetV1-Copy1/lowlight/result'
+save_img_root = '/root/lanyun-tmp/LOLdatasetV1-Copy1/lowlight/result'
 os.makedirs(save_img_root, exist_ok=True)
 
 def valid(val_loader_full, network):
@@ -63,6 +65,7 @@ def valid(val_loader_full, network):
         with torch.no_grad():
             output = network(source_img).clamp_(0, 1)
 
+
             mse_loss = F.mse_loss(output, target_img, reduction='none').mean((1, 2, 3))
             psnr_val = 10 * torch.log10(1 / mse_loss).mean()
             PSNR_full.update(psnr_val.item(), source_img.size(0))
@@ -70,6 +73,7 @@ def valid(val_loader_full, network):
 
             ssim_val = ssim(output, target_img, data_range=1, size_average=False).mean()
             SSIM_full.update(ssim_val.item(), source_img.size(0))
+
 
 
             lpips_val = loss_fn_alex(output * 2 - 1, target_img * 2 - 1).mean()
@@ -84,10 +88,14 @@ def valid(val_loader_full, network):
         target_bgr = cv2.cvtColor(target_np, cv2.COLOR_RGB2BGR)
         output_bgr = cv2.cvtColor(output_np, cv2.COLOR_RGB2BGR)
         
-     
+
+
         psnr_str = f"{psnr_val.item():.2f}"
         ssim_str = f"{ssim_val.item():.4f}"
         lpips_str = f"{lpips_val.item():.4f}"
+
+
+
 
         file_prefix = f"{img_idx:04d}lowlight_psnr{psnr_str}_ssim{ssim_str}_lpips{lpips_str}"
         
@@ -95,7 +103,8 @@ def valid(val_loader_full, network):
         cv2.imwrite(os.path.join(save_img_root, f"{file_prefix}_source.jpg"), source_bgr)
         cv2.imwrite(os.path.join(save_img_root, f"{file_prefix}_target.jpg"), target_bgr)
         cv2.imwrite(os.path.join(save_img_root, f"{file_prefix}_output.jpg"), output_bgr)
-  
+        
+
         comparison = np.hstack([source_bgr, output_bgr, target_bgr])
         cv2.imwrite(os.path.join(save_img_root, f"{file_prefix}_comparison.jpg"), comparison)
         
@@ -114,16 +123,16 @@ if __name__ == '__main__':
     device_index = [0]
     network = eval(args.model.replace('-', '_'))()
     network = nn.DataParallel(network, device_ids=device_index).cuda()
-    network.load_state_dict(torch.load('/root/our/LOLdatasetV1-Copy1/lowlight/saved_models/lowlight/lowlight_lolv1.pth')['state_dict'])
+    network.load_state_dict(torch.load('/root/lanyun-tmp/LOLdatasetV1-Copy1/lowlight/saved_models/lowlight/sfhformer_tlowlight_lol_sfhformer_t_best.pth')['state_dict'])
 
 
     def worker_init_fn(worker_id):
         worker_seed = 8001 + worker_id
         np.random.seed(worker_seed)
         random.seed(worker_seed)
-    # ====================================================
 
-    test_data_dir = '/root/our/data/LOLdataset/eval15'
+
+    test_data_dir = '/root/lanyun-tmp/SFHformer/data/LOLdataset/eval15'
     test_dataset = TestData(8, test_data_dir)
     test_loader = DataLoader(test_dataset,
                              batch_size=1,
@@ -132,7 +141,11 @@ if __name__ == '__main__':
                              pin_memory=True,
                              worker_init_fn=worker_init_fn)
 
-    print(f"{save_img_root}")
+    print(f"开始测试，结果将保存到: {save_img_root}")
+
     avg_psnr, avg_ssim, avg_lpips = valid(test_loader, network)
+    
+
     print(f"PSNR: {avg_psnr:.2f}, SSIM: {avg_ssim:.4f}, LPIPS: {avg_lpips:.4f}")
-    print(f"{save_img_root}")
+    
+    print(f"测试完成！图片已保存到: {save_img_root}")

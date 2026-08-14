@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+
 import os
 import time
-os.environ['CUDA_VISIBLE_DEVICES'] = "0,1"
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import argparse
 import json
 import torch
@@ -20,8 +20,7 @@ import numpy as np
 
 
 def set_seed(seed=8001):
-    
-  
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -33,7 +32,7 @@ def set_seed(seed=8001):
 
 
 set_seed(8001)
-# ============================================
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default='sfhformer_t', type=str, help='model name')
@@ -92,8 +91,8 @@ def valid(val_loader_full, network):
         source_img = batch['source'].cuda()
         target_img = batch['target'].cuda()
 
-        with torch.no_grad():  # torch.no_grad() may cause warning
-            output = network(source_img).clamp_(0, 1)  # we change this to [0,1]?
+        with torch.no_grad():
+            output = network(source_img).clamp_(0, 1)
 
         mse_loss = F.mse_loss(output, target_img, reduction='none').mean((1, 2, 3))
         psnr_full = 10 * torch.log10(1 / mse_loss).mean()
@@ -119,7 +118,7 @@ if __name__ == '__main__':
 
     criterion = nn.L1Loss()
 
-    # AdamW optimizer with betas=(0.9, 0.999) and initial lr=1e-3, as in your paper.
+
     if setting['optimizer'] == 'adamw':
         optimizer = torch.optim.AdamW(network.parameters(), lr=1e-3, betas=(0.9, 0.999))
     elif setting['optimizer'] == 'adam':
@@ -127,7 +126,7 @@ if __name__ == '__main__':
     else:
         raise Exception("ERROR: wrunsupported optimizer")
 
-    # Cosine annealing learning rate schedule, from 1e-3 to 1e-6
+
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
         T_max=setting['epochs'],
@@ -142,10 +141,10 @@ if __name__ == '__main__':
     
     generator = torch.Generator()
     generator.manual_seed(8001)
-    # ====================================================
 
-    train_data_dir = '/root/our/data/LOLdataset/our485'
-    test_data_dir = '/root/our/data/LOLdataset/eval15'
+
+    train_data_dir = '/media/symmoon/2CA015DAA015AAFA/ZS/SFHformer/data/LOLdataset/our485'
+    test_data_dir = '/media/symmoon/2CA015DAA015AAFA/ZS/SFHformer/data/LOLdataset/eval15'
     train_dataset = TrainData(128, train_data_dir)
     train_loader = DataLoader(train_dataset,
                               batch_size=setting['batch_size'],
@@ -179,7 +178,7 @@ if __name__ == '__main__':
             train_loss = train(train_loader, network, criterion, optimizer)
             writer.add_scalar('train_loss', train_loss, epoch)
 
-            # Log learning rate to TensorBoard
+
             current_lr = optimizer.param_groups[0]['lr']
             writer.add_scalar('learning_rate', current_lr, epoch)
 
@@ -204,7 +203,7 @@ if __name__ == '__main__':
                     best_ssim = avg_ssim
                 writer.add_scalar('best_ssim', best_ssim, epoch)
 
-            # update learning rate
+
             scheduler.step()
 
         writer.close()

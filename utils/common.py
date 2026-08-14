@@ -22,7 +22,7 @@ class AverageMeter(object):
 class ListAverageMeter(object):
 	"""Computes and stores the average and current values of a list"""
 	def __init__(self):
-		self.len = 10000  # set up the maximum length
+		self.len = 10000
 		self.reset()
 
 	def reset(self):

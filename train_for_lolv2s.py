@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import time
-os.environ['CUDA_VISIBLE_DEVICES'] = "0,1"
+os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 import argparse
 import json
 import torch
@@ -17,9 +17,10 @@ from pytorch_msssim import ssim
 from models import *
 import random
 import numpy as np
-
+# [New] 引入 EMA 模块
 from torch.optim.swa_utils import AveragedModel, get_ema_multi_avg_fn
 
+# ============== 固定随机种子函数 ==============
 def set_seed(seed=8001):
 
     random.seed(seed)
@@ -44,7 +45,6 @@ parser.add_argument('--log_dir', default='./logs/', type=str, help='path to logs
 parser.add_argument('--exp', default='lowlight', type=str, help='experiment setting')
 args = parser.parse_args()
 
-
 def train(train_loader, network, criterion, optimizer, ema_model):
     losses = AverageMeter()
 
@@ -52,7 +52,7 @@ def train(train_loader, network, criterion, optimizer, ema_model):
 
     network.train()
     
-    # 使用 tqdm 显示进度，方便监控实时 Loss
+ 
     loop = tqdm(train_loader, leave=False)
     
     for batch in loop:
@@ -62,10 +62,10 @@ def train(train_loader, network, criterion, optimizer, ema_model):
         pred_img = network(source_img)
         label_img = target_img
         
-        # 1. 内容损失
+
         loss_content = criterion(pred_img, label_img)
 
-        # 2. FFT 损失
+
         label_fft3 = torch.fft.fft2(label_img, dim=(-2, -1))
         label_fft3 = torch.stack((label_fft3.real, label_fft3.imag), -1)
 
@@ -78,7 +78,7 @@ def train(train_loader, network, criterion, optimizer, ema_model):
 
 
         if not torch.isfinite(loss):
-            print(" Warning: Loss is NaN or Inf, skipping this batch!")
+            print("⚠️ Warning: Loss is NaN or Inf, skipping this batch!")
             optimizer.zero_grad()
             continue
 
@@ -86,7 +86,7 @@ def train(train_loader, network, criterion, optimizer, ema_model):
 
         optimizer.zero_grad()
         loss.backward()
-
+        
 
         torch.nn.utils.clip_grad_norm_(network.parameters(), 0.1)
         
@@ -136,7 +136,8 @@ if __name__ == '__main__':
     network = eval(args.model.replace('-', '_'))()
     network = nn.DataParallel(network, device_ids=device_index).cuda()
 
-
+    # [New] 初始化 EMA 模型
+    # decay=0.999 适合小数据集防止过拟合
     ema_model = AveragedModel(network, multi_avg_fn=get_ema_multi_avg_fn(0.999))
 
     criterion = nn.L1Loss()
@@ -154,7 +155,7 @@ if __name__ == '__main__':
         eta_min=1e-6
     )
 
-
+    # ============== 固定 DataLoader 的随机种子 ==============
     def worker_init_fn(worker_id):
         worker_seed = 8001 + worker_id
         np.random.seed(worker_seed)
@@ -162,11 +163,11 @@ if __name__ == '__main__':
     
     generator = torch.Generator()
     generator.manual_seed(8001)
+    # ====================================================
 
-
-
-    train_data_dir = '/root/our/data/LOLv2/Synthetic/Train'
-    test_data_dir = '/root/our/data/LOLv2/Synthetic/Test'
+    # 请确保这里的路径是正确的
+    train_data_dir = '/root/lanyun-tmp/SFHformer/data/LOLv2/Synthetic/Train'
+    test_data_dir = '/root/lanyun-tmp/SFHformer/data/LOLv2/Synthetic/Test'
     
     train_dataset = TrainData_for_LOLv2Synthetic(128, train_data_dir)
     train_loader = DataLoader(train_dataset,
@@ -211,7 +212,7 @@ if __name__ == '__main__':
                        os.path.join(save_dir, args.model + test_str + '_newest' + '.pth'))
 
             if epoch % setting['eval_freq'] == 0:
-
+           
                 avg_psnr, avg_ssim = valid(test_loader, network)
                 print(f"Epoch {epoch} | Normal: PSNR {avg_psnr:.4f} SSIM {avg_ssim:.4f}")
                 
@@ -234,11 +235,11 @@ if __name__ == '__main__':
                     best_ssim = avg_ssim
                 writer.add_scalar('best_ssim', best_ssim, epoch)
                 
-
+  
                 if avg_psnr_ema > best_psnr_ema:
                     best_psnr_ema = avg_psnr_ema
                     
-
+                    # 解包逻辑：AveragedModel -> DataParallel -> Module
                     if isinstance(ema_model, AveragedModel):
                         real_model = ema_model.module
                         if isinstance(real_model, torch.nn.DataParallel):

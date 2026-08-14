@@ -18,11 +18,11 @@ def read_img255(filename):
 
 
 def augment(imgs=[], size=256, edge_decay=0., only_h_flip=False):
-    # print(f"🔧 augment 函数接收到的 size: {size}")  # ✅ 添加这一行
+
     H, W, _ = imgs[0].shape
     Hc, Wc = [size, size]
 
-    # simple re-weight for the edge
+
     if random.random() < Hc / H * edge_decay:
         Hs = 0 if random.randint(0, 1) == 0 else H - Hc
     else:
@@ -36,7 +36,7 @@ def augment(imgs=[], size=256, edge_decay=0., only_h_flip=False):
     for i in range(len(imgs)):
         imgs[i] = imgs[i][Hs:(Hs + Hc), Ws:(Ws + Wc), :]
 
-    # horizontal flip
+
     is_h_flip = 0
     if random.randint(0, 1) == 1:
         is_h_flip = 1
@@ -45,7 +45,7 @@ def augment(imgs=[], size=256, edge_decay=0., only_h_flip=False):
 
     rot_deg = 0
     if not only_h_flip:
-        # bad data augmentations for outdoor
+
         rot_deg = random.randint(0, 3)
         for i in range(len(imgs)):
             imgs[i] = np.rot90(imgs[i], rot_deg, (0, 1))
@@ -73,11 +73,11 @@ def align_for_test(imgs=[], local_size=32):
 
     for i in range(len(imgs)):
         imgs[i] = imgs[i][Hs:(Hs+Hc), Ws:(Ws+Wc), :]
-        #imgs[i] = imgs[i][(H//2-224):(H//2+224), (W//2-224):(W//2+224), :]
+
     return imgs
 
 
-# --- Training dataset --- #
+
 class TrainData(data.Dataset):
     def __init__(self, crop_size, train_data_dir, only_h_flip=False):
         super().__init__()
@@ -215,8 +215,8 @@ class TrainData_for_LOLv2Synthetic(data.Dataset):
         train_list_haze = '/root/our/data/LOLv2/Synthetic/Train.txt'
         with open(train_list_haze) as f:
             contents = f.readlines()
-            haze_names = [line.strip().split()[0] for line in contents]  # low图片名
-            gt_names = [line.strip().split()[1] for line in contents]    # normal图片名
+            haze_names = [line.strip().split()[0] for line in contents]
+            gt_names = [line.strip().split()[1] for line in contents]
         self.haze_names = haze_names
         self.gt_names = gt_names
         self.train_data_dir = train_data_dir
@@ -280,7 +280,7 @@ class TestData(data.Dataset):
         haze_img = np.ascontiguousarray(haze_img).astype('uint8')
         gt_img = np.ascontiguousarray(gt_img).astype('uint8')
         transform_haze = Compose([ToTensor()])
-        #transform_haze = Compose([ToTensor()])
+
         transform_gt = Compose([ToTensor()])
         haze = transform_haze(haze_img)
         gt = transform_gt(gt_img)
@@ -325,7 +325,7 @@ class TestData_for_FiveK(data.Dataset):
         haze_img = np.ascontiguousarray(haze_img).astype('uint8')
         gt_img = np.ascontiguousarray(gt_img).astype('uint8')
         transform_haze = Compose([ToTensor()])
-        #transform_haze = Compose([ToTensor()])
+
         transform_gt = Compose([ToTensor()])
         haze = transform_haze(haze_img)
         gt = transform_gt(gt_img)
@@ -371,7 +371,7 @@ class TestData_for_LOLv2Real(data.Dataset):
         haze_img = np.ascontiguousarray(haze_img).astype('uint8')
         gt_img = np.ascontiguousarray(gt_img).astype('uint8')
         transform_haze = Compose([ToTensor()])
-        #transform_haze = Compose([ToTensor()])
+
         transform_gt = Compose([ToTensor()])
         haze = transform_haze(haze_img)
         gt = transform_gt(gt_img)
@@ -395,8 +395,8 @@ class TestData_for_LOLv2Synthetic(data.Dataset):
         val_list_haze = '/root/our/data/LOLv2/Synthetic/Test.txt'
         with open(val_list_haze) as f:
             contents = f.readlines()
-            haze_names = [line.strip().split()[0] for line in contents]  # low图片名
-            gt_names = [line.strip().split()[1] for line in contents]    # normal图片名
+            haze_names = [line.strip().split()[0] for line in contents]
+            gt_names = [line.strip().split()[1] for line in contents]
 
         self.haze_names = haze_names
         self.gt_names = gt_names
@@ -416,7 +416,7 @@ class TestData_for_LOLv2Synthetic(data.Dataset):
         haze_img = np.ascontiguousarray(haze_img).astype('uint8')
         gt_img = np.ascontiguousarray(gt_img).astype('uint8')
         transform_haze = Compose([ToTensor()])
-        #transform_haze = Compose([ToTensor()])
+
         transform_gt = Compose([ToTensor()])
         haze = transform_haze(haze_img)
         gt = transform_gt(gt_img)

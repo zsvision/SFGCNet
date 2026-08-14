@@ -26,11 +26,8 @@ def scatter(inputs, target_gpus, chunk_sizes, dim=0):
             return list(map(type(obj), zip(*map(scatter_map, obj.items()))))
         return [obj for targets in target_gpus]
 
-    # After scatter_map is called, a scatter_map cell will exist. This cell
-    # has a reference to the actual function scatter_map, which has references
-    # to a closure that has a reference to the scatter_map cell (because the
-    # fn is recursive). To avoid this reference cycle, we set the function to
-    # None, clearing the cell
+
+
     try:
         return scatter_map(inputs)
     finally:
@@ -74,7 +71,7 @@ class BalancedDataParallel(DataParallel):
         else:
             replicas = self.replicate(self.module, self.device_ids[:len(inputs)])
 
-        # replicas = self.replicate(self.module, device_ids[:len(inputs)])
+
         if self.gpu0_bsz == 0:
             replicas = replicas[1:]
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import time
 import cv2
@@ -15,7 +14,8 @@ from datasets.LoL_DataLoader import TestData_for_LOLv2Real
 from pytorch_msssim import ssim
 from models import *
 import random
-import lpips  
+import lpips
+
 
 def set_seed(seed=8001):
 
@@ -27,13 +27,14 @@ def set_seed(seed=8001):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     os.environ['PYTHONHASHSEED'] = str(seed)
-    print(f" Random seed set to: {seed}")
+    print(f"✅ Random seed set to: {seed}")
+
 
 set_seed(8001)
-# ============================================
+
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', default='sfhformer_lol_m', type=str, help='model name') 
+parser.add_argument('--model', default='sfhformer_lol_m', type=str, help='model name')
 parser.add_argument('--num_workers', default=16, type=int, help='number of workers')
 parser.add_argument('--save_dir', default='./saved_models/', type=str, help='path to models saving')
 parser.add_argument('--data_dir', default='./data/', type=str, help='path to dataset')
@@ -44,7 +45,7 @@ args = parser.parse_args()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-save_img_root = '/root/our/LOLV2_Real_captured/lowlight/result'
+save_img_root = '/root/lanyun-tmp/LOLV2_Real_captured/lowlight/result'
 os.makedirs(save_img_root, exist_ok=True)
 
 
@@ -52,6 +53,7 @@ def valid(val_loader_full, network):
     PSNR_full = AverageMeter()
     SSIM_full = AverageMeter()
     LPIPS_full = AverageMeter()
+
 
     loss_fn_alex = lpips.LPIPS(net='alex', verbose=False).to(device)
 
@@ -81,14 +83,17 @@ def valid(val_loader_full, network):
         LPIPS_full.update(lpips_val, source_img.size(0))
 
 
+
+
         psnr_str = f"{psnr_val.item():.2f}"
         ssim_str = f"{ssim_val.item():.4f}"
         lpips_str = f"{lpips_val:.4f}"
 
-        file_prefix = f"{img_idx:04d}lowlight_psnr{psnr_str}_ssim{ssim_str}_lpips{lpips_str}"
-        # =========================================================
 
-  
+        file_prefix = f"{img_idx:04d}lowlight_psnr{psnr_str}_ssim{ssim_str}_lpips{lpips_str}"
+
+
+
         source_np = (source_img[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
         target_np = (target_img[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
         output_np = (output[0].cpu().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
@@ -119,10 +124,12 @@ if __name__ == '__main__':
         setting = json.load(f)
 
 
+
+
     network = eval(args.model.replace('-', '_'))()
     network = nn.DataParallel(network, device_ids=[0]).to(device)
 
-    checkpoint_path = '/root/our/LOLV2_Real_captured/lowlight/saved_models/lowlight/lolv2r.pth'
+    checkpoint_path = '/root/lanyun-tmp/LOLV2_Real_captured/lowlight/saved_models/lowlight/sfhformer_lol_mtrain_lolv2r_best.pth'
     checkpoint = torch.load(checkpoint_path, map_location=device)
     network.load_state_dict(checkpoint['state_dict'])
 
@@ -131,7 +138,7 @@ if __name__ == '__main__':
         np.random.seed(worker_seed)
         random.seed(worker_seed)
 
-    test_data_dir = '/root/our/data/LOLv2/Real_captured/Test'
+    test_data_dir = '/root/lanyun-tmp/SFHformer/data/LOLv2/Real_captured/Test'
     test_dataset = TestData_for_LOLv2Real(8, test_data_dir)
     test_loader = DataLoader(
         test_dataset,
@@ -142,8 +149,8 @@ if __name__ == '__main__':
         worker_init_fn=worker_init_fn
     )
 
-    print(f"{save_img_root}")
+    print(f"开始测试，结果将保存到: {save_img_root}")
     avg_psnr, avg_ssim, avg_lpips = valid(test_loader, network)
     
     print(f"PSNR: {avg_psnr:.2f}, SSIM: {avg_ssim:.4f}, LPIPS: {avg_lpips:.4f}")
-    print(f" {save_img_root}")
+    print(f"测试完成！图片已保存到: {save_img_root}")
