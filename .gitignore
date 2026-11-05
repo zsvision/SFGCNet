@@ -1,0 +1,61 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.out
+*.traceback
+
+# Model weights and training checkpoints
+checkpoints/
+*.pth
+*.ckpt
+*.json.checkpoint
+
+# Datasets (exclude large local files, only retain data loading scripts)
+datasets/*
+!datasets/*.py
+!datasets/__init__.py
+
+# Experimental output images and metric files
+results/
+output/
+visualization/
+*.png
+*.jpg
+*.npy
+*.csv
+
+# Jupyter Notebook cache files
+.ipynb_checkpoints/
+
+# IDE and system hidden files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local virtual environment directories
+venv/
+env/
+low/
+
+# Backup configuration files
+requirements.txt.bak
+environment.yml.bak
+
+# Training visualization logs
+wandb/
+runs/
+events.out.tfevents*
+
+# Local log folder
+logs/
+# Local raw data folder
+data/
+# Underwater local dataset folder
+water/
+# Temporary result text
+result.txt
