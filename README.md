@@ -160,3 +160,22 @@ The detailed datasets and metrics used for each task are summarized below:
 ## Acknowledgement
 
 We thank the authors of the public low-light image enhancement datasets and related open-source projects.
+
+
+
+## Citation
+
+If you find this repository useful for your research, please use the following.
+
+```
+@article{zhu2026spatial,
+  title={Spatial-frequency collaborative learning with global context awareness for robust low-light image enhancement},
+  author={Zhu, Shuo and Leng, Qiangkui and Liu, Qian and Wang, Changzhong},
+  journal={The Visual Computer},
+  volume={42},
+  number={14},
+  pages={593},
+  year={2026},
+  doi={10.1007/s00371-026-04804-4}
+}
+```
